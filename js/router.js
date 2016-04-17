@@ -17,9 +17,11 @@ function router() {
         });
     }
 
-    function createView() {
-        var view = document.createElement('view');
-        document.body.appendChild(view);
+    function getAppView() {
+        var view = document.getElementsByTagName("view-app")[0]
+        if (!view) {
+            console.error("You have to add a <view-app></view-app> element to the index.html page!")
+        }
         return view;
     }
 
@@ -83,7 +85,7 @@ function router() {
     }
 
     function setup() {
-        var view = createView();
+        var view = getAppView();
         addHashChangeListener(view);
         navigate(view, getPath());
     }
