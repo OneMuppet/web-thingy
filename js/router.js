@@ -24,12 +24,31 @@ function router() {
         return view;
     }
 
+    function updateDOM(link, view, domUpdates) {
+        // Ok I'd admit this was not part of the plan and does get complicated here with recursive crap
+        // But subViews... come on it's such a boost! :)
+        var content = link.import;
+        domUpdates = domUpdates || [];
+        domUpdates.push(function () { view.innerHTML = content.body.innerHTML });
+
+        var views = content.body.getElementsByTagName("view");
+        if (views.length > 0) { // Process child-viewss
+            for (var i = 0; i < views.length; i++) {
+                navigate(views[i], getPath(views[i].attributes["src"].value), domUpdates);
+            }
+        } else {
+            while (domUpdates.length > 0) {
+                var func = domUpdates.pop();
+                func();
+            }
+        }
+    }
+
     function navigate(view, path, domUpdates) {
         // get from cache first
         var link = links[path];
         if (link) {
-            var content = link.import;
-            view.innerHTML = content.body.innerHTML;
+            updateDOM(link, view, domUpdates);
             return;
         }
 
@@ -39,23 +58,7 @@ function router() {
         link.href = path;
         link.setAttribute('async', '');
         link.onload = function (e) {
-            var content = link.import;
-            // Ok I'd admit this was not part of the plan and does get complicated here with recursive crap
-            // But subViews... come on it's such a boost! :)
-            domUpdates = domUpdates || []; 
-            domUpdates.push(function () { view.innerHTML = content.body.innerHTML });
-
-            var views = content.body.getElementsByTagName("view");
-            if (views.length > 0) { // Process child-viewss
-                for (var i = 0; i < views.length; i++) {
-                    navigate(views[i], getPath(views[i].attributes["src"].value), domUpdates);
-                }
-            } else {
-                while (domUpdates.length > 0) {
-                    var updateDOM = domUpdates.pop();
-                    updateDOM();
-                }
-            }
+            updateDOM(link, view, domUpdates);
         };
         link.onerror = function (err) {
             console.error(err)
