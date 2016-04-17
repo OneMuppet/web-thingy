@@ -13,8 +13,7 @@ function router() {
         // Couldn't figure out a way to implement client only routing with pushState so I used hash-bang instead
         window.addEventListener("hashchange", function (e) {
             var path = getPath();
-            navigate(view, path);
-            console.log("Navigating to: %s", path);
+            navigate(view, path, null);
         });
     }
 
@@ -24,15 +23,28 @@ function router() {
         return view;
     }
 
+    function getInnerHtmlFromContent(content, view) {
+        return content ? content.body.innerHTML :
+            "<span class='error'>Error: could not find view '" +
+            getPath(view.attributes["src"].value) +
+            "'</span>"
+    }
+
+    function getChildViewsFromContent(content) {
+        return content ? content.body.getElementsByTagName("view") : []
+    }
+
     function updateDOM(link, view, domUpdates) {
         // Ok I'd admit this was not part of the plan and does get complicated here with recursive crap
         // But subViews... come on it's such a boost! :)
         var content = link.import;
         domUpdates = domUpdates || [];
-        domUpdates.push(function () { view.innerHTML = content.body.innerHTML });
+        domUpdates.push(function () {
+            view.innerHTML = getInnerHtmlFromContent(content, view);
+        });
 
-        var views = content.body.getElementsByTagName("view");
-        if (views.length > 0) { // Process child-viewss
+        var views = getChildViewsFromContent(content);
+        if (views.length > 0) { // Process child-views
             for (var i = 0; i < views.length; i++) {
                 navigate(views[i], getPath(views[i].attributes["src"].value), domUpdates);
             }
@@ -62,6 +74,7 @@ function router() {
         };
         link.onerror = function (err) {
             console.error(err)
+            updateDOM(link, view, domUpdates);
         };
         document.body.appendChild(link);
 
