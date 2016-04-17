@@ -1,4 +1,9 @@
-$colorRed:red;
+$colorText: #34495e;
+$colorAccent: #9b59b6;
+$colorDanger:#e74c3c;
+$colorWarning:#e67e22;
+$colorSuccess:#2ecc71;
+$colorInfo:#3498db;
 
 /*
 	Minimal CSS
@@ -9,7 +14,7 @@ $colorRed:red;
 * { margin: 0; padding: 0; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
 /* Layout */
-body { background-color: #fff; color: #333;	font: 14px/20px "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif; }
+body { background-color: #fff; color: $colorText;	font: 14px/20px "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif; }
 
 header { width: 100%; margin: 0 auto; position: relative; padding: 20px 0; border-bottom: 1px solid #ddd; margin-bottom: 20px; }
 .logo { font-size: 28px; color: #333; }
@@ -119,6 +124,15 @@ tfoot { font-style: italic; }
 }
  
  /* state */
-.error {
-    color: $colorRed;
+.danger {
+    color: $colorDanger;
+}
+.warning {
+    color: $colorWarning;
+}
+.success {
+    color: $colorSuccess;
+}
+.info {
+    color: $colorInfo;
 }

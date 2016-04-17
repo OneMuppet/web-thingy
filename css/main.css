@@ -13,7 +13,7 @@
 /* Layout */
 body {
   background-color: #fff;
-  color: #333;
+  color: #34495e;
   font: 14px/20px "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif; }
 
 header {
@@ -297,5 +297,14 @@ tfoot {
     color: #000 !important; } }
 
 /* state */
-.error {
-  color: red; }
+.danger {
+  color: #e74c3c; }
+
+.warning {
+  color: #e67e22; }
+
+.success {
+  color: #2ecc71; }
+
+.info {
+  color: #3498db; }

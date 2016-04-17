@@ -5,6 +5,7 @@ function router() {
     var links = {};
 
     function getPath(page) {
+        if (page && page.indexOf("/") !== -1 && page.indexOf(".") !== -1) return page;
         var page = page || (location.hash.substr(2, location.hash.length - 2));
         return pathToContent + page + "/" + page + ".html";
     }
@@ -27,7 +28,7 @@ function router() {
 
     function getInnerHtmlFromContent(content, view) {
         return content ? content.body.innerHTML :
-            "<span class='error'>Error: could not find view '" +
+            "<span style='color:red'>Error: could not find view '" +
             getPath(view.attributes["src"].value) +
             "'</span>"
     }
@@ -82,6 +83,7 @@ function router() {
 
         // Push to cache
         links[path] = link;
+        return link;
     }
 
     function setup() {
