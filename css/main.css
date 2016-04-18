@@ -212,10 +212,13 @@ hr {
   height: 1px;
   margin-bottom: 20px; }
 
-pre, code {
+pre, code, xmp {
   background-color: #eee;
   display: block;
-  padding: 10px; }
+  padding: 10px;
+  white-space: inherit;
+  word-break: break-all; 
+  }
 
 pre {
   margin-bottom: 20px;
