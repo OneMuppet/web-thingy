@@ -27,43 +27,59 @@ function router() {
     }
 
     function getInnerHtmlFromContent(content, view) {
-        return content ? content.body.innerHTML :
-            "<span style='color:red'>Error: could not find view '" +
-            getPath(view.attributes["src"].value) +
-            "'</span>"
+        if (content) {
+            return content.body.innerHTML;
+        } else {
+            console.error("Content if undefined. Could not find view: ", getPath(view.attributes["src"].value));
+            return "<span style='color:red'>Error: could not find view '" + getPath(view.attributes["src"].value) + "'</span>"
+        }
     }
 
     function getChildViewsFromContent(content) {
         return content ? content.body.getElementsByTagName("view") : []
     }
 
-    function updateDOM(link, view, domUpdates) {
+    function updateDOM(link, view, domUpdateChain) {
         // Ok I'd admit this was not part of the plan and does get complicated here with recursive crap
         // But subViews... come on it's such a boost! :)
         var content = link.import;
-        domUpdates = domUpdates || [];
-        domUpdates.push(function () {
-            view.innerHTML = getInnerHtmlFromContent(content, view);
-        });
-
+        if (content) {
+            domUpdateChain.push(function () { view.innerHTML = getInnerHtmlFromContent(content, view); });
+        }
+        
         var views = getChildViewsFromContent(content);
-        if (views.length > 0) { // Process child-views
+        if (views.length > 0) {
             for (var i = 0; i < views.length; i++) {
-                navigate(views[i], getPath(views[i].attributes["src"].value), domUpdates);
+                if (domUpdateChain.length > 10) {
+                    console.error("This smells like a circular reference issue. Please check if you have included a view that references back to it self somewhere: " + JSON.stringify(domUpdateChain));
+                    return;
+                }
+                navigate(views[i], getPath(views[i].attributes["src"].value), domUpdateChain);
             }
         } else {
-            while (domUpdates.length > 0) {
-                var func = domUpdates.pop();
-                func();
-            }
+            executeDOMUpdateChain(domUpdateChain);
         }
     }
 
-    function navigate(view, path, domUpdates) {
+    var domUpdateChain = [];
+
+    function executeDOMUpdateChain(domUpdateChain) {
+        var max = domUpdateChain.length;
+        while (max--) {
+            domUpdateChain[max]();
+        }
+    }
+
+    function navigate(view, path, domUpdateChain) {
+        if (!domUpdateChain) {
+            domUpdateChain = []
+        }
+
         // get from cache first
         var link = links[path];
         if (link) {
-            updateDOM(link, view, domUpdates);
+            updateDOM(link, view, domUpdateChain);
+            executeDOMUpdateChain(domUpdateChain);
             return;
         }
 
@@ -73,11 +89,16 @@ function router() {
         link.href = path;
         link.setAttribute('async', '');
         link.onload = function (e) {
-            updateDOM(link, view, domUpdates);
+            if (domUpdateChain.length > 10) {
+                console.error("This smells like a circular reference issue. Please check if you have included a view that references back to it self somewhere: " + JSON.stringify(domUpdateChain));
+                return;
+            }
+            updateDOM(link, view, domUpdateChain);
+            executeDOMUpdateChain(domUpdateChain);
         };
         link.onerror = function (err) {
             console.error(err)
-            updateDOM(link, view, domUpdates);
+            executeDOMUpdateChain(domUpdateChain);
         };
         document.body.appendChild(link);
 
