@@ -82,7 +82,7 @@ img.center 		{ margin: 0 auto; display: block; }
 /* Misc */
 hr { background-color: #ccc; border: 0px; color: #ccc; height: 1px; margin-bottom: 20px; }
 
-pre, code { background-color: #eee; display:block; padding:10px; }
+pre, code, xmp { background-color: #eee; display:block; padding:10px; white-space: inherit; word-break: break-all; }
 
 pre {
 	margin-bottom: 20px;
