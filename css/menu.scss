@@ -5,5 +5,18 @@
         left: 0;
         right: 0;
         text-align: center;
+        border-top: 1px solid #aaa;
+        background: rgba(255, 255, 255, 0.4);
+        
+        ul {
+            display: flex;
+            li {
+                flex: 1 100%;
+                padding: 10px;
+                a {
+                    padding: 10px;
+                }
+            }
+        }
     }
 }

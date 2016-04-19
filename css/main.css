@@ -4,7 +4,16 @@
     bottom: 0;
     left: 0;
     right: 0;
-    text-align: center; } }
+    text-align: center;
+    border-top: 1px solid #aaa;
+    background: rgba(255, 255, 255, 0.4); }
+    .main-nav ul {
+      display: flex; }
+      .main-nav ul li {
+        flex: 1 100%;
+        padding: 10px; }
+        .main-nav ul li a {
+          padding: 10px; } }
 
 /*
 	Minimal CSS
