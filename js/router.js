@@ -1,17 +1,23 @@
 "use strict"
-function router() {
+function router(basePath) {
 
-    var pathToContent = "/content/";
-    var links = {};
+    var pathToContent = basePath || "/content/";
+    var linkCache = {};
+
+    function hasFullPath(page) {
+        return page && page.indexOf("/") !== -1 && page.indexOf(".")
+    }
 
     function getPath(page) {
-        if (page && page.indexOf("/") !== -1 && page.indexOf(".") !== -1) return page;
+        // Fullpath 
+        if (hasFullPath(page)) return page;
+
+        // Convetion based path
         var page = page || (location.hash.substr(2, location.hash.length - 2));
         return pathToContent + page + "/" + page + ".html";
     }
 
     function addHashChangeListener(view) {
-        // Couldn't figure out a way to implement client only routing with pushState so I used hash-bang instead
         window.addEventListener("hashchange", function (e) {
             var path = getPath();
             navigate(view, path, null);
@@ -46,7 +52,7 @@ function router() {
         if (content) {
             domUpdateChain.push(function () { view.innerHTML = getInnerHtmlFromContent(content, view); });
         }
-        
+
         var views = getChildViewsFromContent(content);
         if (views.length > 0) {
             for (var i = 0; i < views.length; i++) {
@@ -76,7 +82,7 @@ function router() {
         }
 
         // get from cache first
-        var link = links[path];
+        var link = linkCache[path];
         if (link) {
             updateDOM(link, view, domUpdateChain);
             executeDOMUpdateChain(domUpdateChain);
@@ -103,7 +109,7 @@ function router() {
         document.body.appendChild(link);
 
         // Push to cache
-        links[path] = link;
+        linkCache[path] = link;
         return link;
     }
 
