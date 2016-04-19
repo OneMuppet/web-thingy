@@ -5,7 +5,7 @@ function router(basePath) {
     var linkCache = {};
 
     function hasFullPath(page) {
-        return page && page.indexOf("/") !== -1 && page.indexOf(".")
+        return page && page.indexOf("/")
     }
 
     function getPath(page) {
