@@ -20,7 +20,7 @@ function router(basePath) {
     function addHashChangeListener(view) {
         window.addEventListener("hashchange", function (e) {
             var path = getPath();
-            navigate(view, path, null);
+            loadView(view, path, null);
         });
     }
 
@@ -60,7 +60,7 @@ function router(basePath) {
                     console.error("This smells like a circular reference issue. Please check if you have included a view that references back to it self somewhere: " + JSON.stringify(domUpdateChain));
                     return;
                 }
-                navigate(views[i], getPath(views[i].attributes["src"].value), domUpdateChain);
+                loadView(views[i], getPath(views[i].attributes["src"].value), domUpdateChain);
             }
         } else {
             executeDOMUpdateChain(domUpdateChain);
@@ -76,7 +76,11 @@ function router(basePath) {
         }
     }
 
-    function navigate(view, path, domUpdateChain) {
+    function loadView(view, path, domUpdateChain) {
+        if(view.attributes["manual"]) {
+            return;
+        }
+        
         if (!domUpdateChain) {
             domUpdateChain = []
         }
@@ -116,7 +120,7 @@ function router(basePath) {
     function setup() {
         var view = getAppView();
         addHashChangeListener(view);
-        navigate(view, getPath());
+        loadView(view, getPath());
     }
 
     return {

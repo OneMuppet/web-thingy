@@ -1,2 +1,2 @@
 "use strict"
-console.log("loading posts....")
+console.log("finnished loadning posts.")

@@ -281,18 +281,6 @@ ol {
 ul ul, ol ol {
   margin-bottom: 0; }
 
-/* Form */
-fieldset {
-  position: relative;
-  border-top: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px; }
-
-fieldset legend {
-  font-weight: bold;
-  font-size: 16px;
-  padding: 0 5px; }
-
 /* Table */
 table {
   margin-bottom: 20px;

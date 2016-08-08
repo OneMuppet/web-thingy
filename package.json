@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "http-server | npm run css:watch",
+    "start": "http-server -p 8081 | npm run css:watch",
     "test": "echo\"Error: no test specified\" && exit 1",
     "css": "node-sass css/main.scss -o css",
     "css:watch": "npm run css && node-sass css/main.scss -wo css"
@@ -25,6 +25,7 @@
     "node-sass": "^3.4.2"
   },
   "dependencies": {
+    "instafeed.js": "^1.4.1",
     "webcomponents.js": "^0.7.21"
   }
 }
